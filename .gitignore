@@ -1,0 +1,5 @@
+.pio
+.pioenvs
+.piolibdeps
+.settings
+data/homie/config.json
