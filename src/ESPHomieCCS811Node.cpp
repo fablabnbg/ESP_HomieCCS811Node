@@ -9,7 +9,7 @@
 
 ESP_HomieCCS811Node::ESP_HomieCCS811Node():
 HomieNode("ccs811", "CCS881 Sensor", "sensor_co2_vcoc"),
-sensor(0x5B), curTemp(0), curTVOC(0), curCO2(0)
+sensor(0x5A), curTemp(0), curTVOC(0), curCO2(0)
 {
 	advertise("temperature").setName("Temperatur").setDatatype("float").setUnit("°C");
 	advertise("co2").setName("CO2").setDatatype("float").setUnit("ppm");
@@ -17,9 +17,7 @@ sensor(0x5B), curTemp(0), curTVOC(0), curCO2(0)
 }
 
 void ESP_HomieCCS811Node::setup() {
-	  delay(100);
 	  Wire.begin(SDA, SCL);
-	  delay(100);
 	  CCS811Core::status returnCode = sensor.begin();
 	  if (returnCode != CCS811Core::SENSOR_SUCCESS)
 	  {

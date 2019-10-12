@@ -65,3 +65,25 @@
 #
 # script:
 #     - platformio ci --lib="." --board=ID_1 --board=ID_2 --board=ID_N
+
+language: python
+python:
+    - "2.7"
+
+sudo: false
+cache:
+    directories:
+        - "~/.platformio"
+
+env:
+    - PLATFORMIO_CI_SRC=src/main.cpp
+
+install:
+    - pip install -U platformio
+    - platformio lib -g install https://github.com/homieiot/homie-esp8266.git#develop-v3
+    - platformio lib -g install https://github.com/euphi/HomieLoggerNode.git#develop-v3
+    - platformio lib -g install 1626
+    
+
+script:
+    - platformio ci --lib="." --board=d1_mini
