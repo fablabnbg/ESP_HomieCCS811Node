@@ -19,15 +19,20 @@
 class ESP_HomieCCS811Node: public HomieNode {
 public:
 	ESP_HomieCCS811Node(const HomieBME280Node &bme280);
+
 	virtual void setup() override;
 	virtual void loop() override;
 
-private:
+protected:
+	virtual bool handleInput(const HomieRange& range, const String& property, const String& value) override;
+
+	private:
 	const HomieBME280Node& bme280;
 	CCS811 sensor;
 	float curTemp;
 	uint16_t curTVOC;
 	uint16_t curCO2;
+	bool getSensorError(String& errStr);
 };
 
 #endif /* SRC_ESPHOMIECCS811NODE_H_ */
