@@ -48,7 +48,7 @@ void ESP_HomieCCS811Node::loop() {
 			logstring.concat(bl);
 			LN.log("ESP_HomieCCS811Node::loop()", LoggerNode::INFO, logstring);
 		}
-		if (true || sensor.checkForStatusError()) {
+		if (sensor.checkForStatusError()) {
 			String errStr("Error: ");
 			getSensorError(errStr);
 			LN.log("ESP_HomieCCS811Node::loop()", LoggerNode::WARNING, errStr);
