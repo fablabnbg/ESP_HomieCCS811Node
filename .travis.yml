@@ -76,12 +76,12 @@ cache:
         - "~/.platformio"
 
 env:
-    - PLATFORMIO_CI_SRC=src/main.cpp
+    - PLATFORMIO_CI_SRC=examples/simplenode.cpp
 
 install:
     - pip install -U platformio
-    - platformio lib -g install https://github.com/homieiot/homie-esp8266.git#develop-v3
-    - platformio lib -g install https://github.com/euphi/HomieLoggerNode.git#develop-v3
+    - platformio lib -g install HomieLoggerNode
+    - platformio lib -g install ESP_HomieBME280Node
     - platformio lib -g install 1626
     
 
