@@ -8,9 +8,9 @@
 #include <ESPHomieCCS811Node.h>
 #include <LoggerNode.h>
 
-ESP_HomieCCS811Node::ESP_HomieCCS811Node(const HomieBME280Node& _bme280):
+ESP_HomieCCS811Node::ESP_HomieCCS811Node():
 	HomieNode("ccs811", "CCS881 Sensor", "sensor_co2_vcoc"),
-	bme280(_bme280), sensor(0x5A), curTemp(0), curTVOC(0), curCO2(0)
+	sensor(0x5A), curTemp(0), curTVOC(0), curCO2(0)
 {
 	advertise("temperature").setName("Temperatur").setDatatype("float").setUnit("°C");
 	advertise("co2").setName("CO2").setDatatype("float").setUnit("ppm");
@@ -26,6 +26,7 @@ void ESP_HomieCCS811Node::setup() {
 		Serial.printf("CCS811::begin() returned with error %x.\n", returnCode);
 	}
 	sensor.setDriveMode(2);
+	sensor.setEnvironmentalData(50, 22);  // set reasonable values to start
 }
 
 void ESP_HomieCCS811Node::loop() {
@@ -33,7 +34,6 @@ void ESP_HomieCCS811Node::loop() {
 	uint32_t now = millis();
 	if (now > nextRead && sensor.dataAvailable()) {
 		nextRead = now + 3000; // 120000; //60000;
-		sensor.setEnvironmentalData(bme280.getRelHum(), bme280.getTemp());
 		sensor.readAlgorithmResults();
 		curTemp = sensor.getTemperature();
 		curCO2 = sensor.getCO2();
@@ -54,10 +54,12 @@ void ESP_HomieCCS811Node::loop() {
 			LN.log("ESP_HomieCCS811Node::loop()", LoggerNode::WARNING, errStr);
 		}
 		if (Homie.isConnected()) {
-			setProperty("temperature").send(String(curTemp));
+			//setProperty("temperature").send(String(curTemp));
 			setProperty("tvoc").send(String(curTVOC));
 			setProperty("co2").send(String(curCO2));
 			setProperty("baseline").send(String(bl));
+		} else {
+			LN.log("ESP_HomieCCS811Node::loop()", LoggerNode::DEBUG, "Not connected");
 		}
 	}
 }
@@ -91,6 +93,12 @@ bool ESP_HomieCCS811Node::handleInput(const HomieRange &range, const String &pro
 	}
 
 	return false;
+}
+
+void ESP_HomieCCS811Node::setEnvironmentalData(float temp, float hum) {
+	bool err = temp > 100 || temp < 0 || hum < 5 || hum > 100 ;
+	LN.logf("ESP_HomieCCS811Node::setEnvironmentalData()", err?LoggerNode::ERROR : LoggerNode::DEBUG, "%s Env data: [t: %f°C, h: %f relH%%]\n",  err ? "Invalid":"Set", temp, hum);
+	if (!err) sensor.setEnvironmentalData(hum, temp);
 }
 
 bool ESP_HomieCCS811Node::getSensorError(String& errStr) {

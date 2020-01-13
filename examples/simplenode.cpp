@@ -17,9 +17,9 @@
 LoggerNode LN;
 
 HomieBME280Node bme280;
-ESP_HomieCCS811Node ccs811(bme280);
+ESP_HomieCCS811Node ccs811;
 
-//
+
 
 void setup() {
   Homie_setFirmware(FW_NAME, FW_VERSION);
@@ -32,6 +32,8 @@ void setup() {
 
   Homie.setup();
   Wire.begin(SDA, SCL);
+
+  bme280.setEnvDataCallback([](float t, float h, float p)->bool { ccs811.setEnvironmentalData(t, h);});
 
 }
 
