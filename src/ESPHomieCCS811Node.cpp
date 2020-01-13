@@ -96,9 +96,9 @@ bool ESP_HomieCCS811Node::handleInput(const HomieRange &range, const String &pro
 }
 
 void ESP_HomieCCS811Node::setEnvironmentalData(float temp, float hum) {
-	bool err = temp > 100 || temp < 0 || hum < 5 || hum > 100 ;
-	LN.logf("ESP_HomieCCS811Node::setEnvironmentalData()", err?LoggerNode::ERROR : LoggerNode::DEBUG, "%s Env data: [t: %f°C, h: %f relH%%]\n",  err ? "Invalid":"Set", temp, hum);
-	if (!err) sensor.setEnvironmentalData(hum, temp);
+	bool succ = temp < 100 && temp > 0 && hum > 5 && hum < 100 ;
+	LN.logf("ESP_HomieCCS811Node::setEnvironmentalData()", succ?LoggerNode::DEBUG : LoggerNode::ERROR, "%s Env data: [t: %f°C, h: %f relH%%]\n",  succ ? "Set":"Invalid", temp, hum);
+	if (succ) sensor.setEnvironmentalData(hum, temp);
 }
 
 bool ESP_HomieCCS811Node::getSensorError(String& errStr) {
