@@ -3,3 +3,4 @@
 .cproject
 data/homie/config.json
 src/main.cpp
+lib/
