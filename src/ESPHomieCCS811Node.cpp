@@ -33,7 +33,7 @@ void ESP_HomieCCS811Node::loop() {
 	static uint32_t nextRead = 0;
 	uint32_t now = millis();
 	if (now > nextRead && sensor.dataAvailable()) {
-		nextRead = now + 3000; // 120000; //60000;
+		nextRead = now + Homie.getConfiguration().deviceStatsInterval;
 		sensor.readAlgorithmResults();
 		curTemp = sensor.getTemperature();
 		curCO2 = sensor.getCO2();
